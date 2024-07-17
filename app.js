@@ -11,6 +11,7 @@ if (!process.env.BOT_TOKEN) throw new Error("Config bot api first");
 
 // const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
+const rankRouter = require("./routes/rank");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.urlencoded({ extended: false }));
 
 // app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/rank", rankRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

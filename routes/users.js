@@ -80,18 +80,16 @@ router.post("/", async function (req, res, next) {
 		},
 	});
 
-	let ref;
-	if (req.body.ref) {
-		ref = await prisma.user.findUnique({
-			where: {
-				id: req.body.ref,
-			},
-		});
-	}
-
-	console.log("🚀 ~ file: users.js:95 ~ ref:", ref);
-
 	if (!user) {
+		let ref;
+		if (req.body.ref) {
+			ref = await prisma.user.findUnique({
+				where: {
+					id: req.body.ref,
+				},
+			});
+		}
+
 		user = await prisma.user.upsert({
 			create: {
 				userId: initUser.id,

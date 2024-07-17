@@ -14,7 +14,7 @@ router.get("/", async function (req, res, next) {
 
 	const result = await prisma.$queryRaw`
              SELECT rank FROM (
-                SELECT id, ROW_NUMBER() OVER (ORDER BY "point" DESC) as rank FROM "User"
+                SELECT "userId", ROW_NUMBER() OVER (ORDER BY "point" DESC) as rank FROM "User"
             ) ranked_users
             WHERE "userId" = ${req.query.user_id}
         `;

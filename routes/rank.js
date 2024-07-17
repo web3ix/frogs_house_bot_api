@@ -17,7 +17,7 @@ router.get("/", async function (req, res, next) {
              SELECT rank FROM (
                 SELECT id, ROW_NUMBER() OVER (ORDER BY "point" DESC) as rank FROM "User"
             ) ranked_users
-            WHERE id = ${user.id}
+            WHERE userId = ${req.query.user_id}
         `
 	);
 	const total = await prisma.user.count();

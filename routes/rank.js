@@ -31,7 +31,7 @@ router.get("/", async function (req, res, next) {
 	return res.json({
 		total,
 		top500,
-		rank: result[0]?.rank || null,
+		rank: result[0]?.rank.toNumber() || null,
 	});
 });
 

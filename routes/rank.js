@@ -12,35 +12,14 @@ router.get("/", async function (req, res, next) {
 	if (!req.query.user_id)
 		return res.status(400).send("Missing required query field user_id");
 
-	const initUser = JSON.parse(initData.get("user"));
-
-	const user = await prisma.user.findFirst({
-		where: {
-			userId: +req.query.user_id ?? null,
-		},
-		select: {
-			id: true,
-			userId: true,
-			username: true,
-			point: true,
-			isPremium: true,
-			ref: true,
-			referrals: true,
-		},
-	});
-
-	const result =
-		(await prisma.$queryRaw) <
-		{
-			rank: number,
-		} >
+	const result = await prisma.$queryRaw(
 		`
              SELECT rank FROM (
                 SELECT id, ROW_NUMBER() OVER (ORDER BY "point" DESC) as rank FROM "User"
             ) ranked_users
             WHERE id = ${user.id}
-        `;
-
+        `
+	);
 	const total = await prisma.user.count();
 
 	const top500 = await prisma.user.findMany({

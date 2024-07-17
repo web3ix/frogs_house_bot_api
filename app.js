@@ -9,7 +9,7 @@ require("dotenv").config();
 if (!process.env.BOT_TOKEN) throw new Error("Config bot api first");
 
 // const indexRouter = require("./routes/index");
-// const usersRouter = require("./routes/users");
+const usersRouter = require("./routes/users");
 
 const app = express();
 
@@ -22,7 +22,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // app.use("/", indexRouter);
-// app.use("/users", usersRouter);
+app.use("/users", usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -36,8 +36,8 @@ app.use(function (err, req, res, next) {
 	res.locals.error = req.app.get("env") === "development" ? err : {};
 
 	// render the error page
-	res.status(err.status || 500);
-	res.render("error");
+	return res.status(err.status || 500);
+	// res.render("error");
 });
 
 // setup telegram bot
@@ -66,25 +66,22 @@ bot.on("message", (msg) => {
 
 	// send a message to the chat acknowledging receipt of their message
 	// bot.sendMessage(chatId, "Received your message");
-	// bot.sendPhoto(
-	// 	"-1002234950719",
-	// 	"https://images.unsplash.com/photo-1566275529824-cca6d008f3da?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8cGhvdG98ZW58MHx8MHx8fDA%3D",
-	// 	{
-	// 		caption:
-	// 			"<strong>🎉🐸 Community Growth Alert! 🐸🎉</strong>\n\nOur community has grown rapidly, and it's time to check the leaderboard!\n\n<i>Stay engaged, keep participating, and see where you stand! 🐸</i>",
-	// 		parse_mode: "HTML",
-	// 		reply_markup: {
-	// 			inline_keyboard: [
-	// 				[
-	// 					{
-	// 						text: "Launch",
-	// 						url: "https://t.me/frogs_house_bot/join",
-	// 					},
-	// 				],
+	// @frogs_housecm
+	// bot.sendPhoto("-1002234950719", "https://imgur.`com/xB8KDfA", {
+	// 	caption:
+	// 		"<strong>🎉🐸 Community Growth Alert! 🐸🎉</strong>\n\nOur community has grown rapidly, and it's time to check the leaderboard!\n\n<i>Stay engaged, keep participating, and see where you stand! 🐸</i>",
+	// 	parse_mode: "HTML",
+	// 	reply_markup: {
+	// 		inline_keyboard: [
+	// 			[
+	// 				{
+	// 					text: "Launch",
+	// 					url: "https://t.me/frogs_house_bot/join",
+	// 				},
 	// 			],
-	// 		},
-	// 	}
-	// );
+	// 		],
+	// 	},
+	// });
 });
 
 module.exports = app;

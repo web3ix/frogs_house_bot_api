@@ -4,6 +4,7 @@ const express = require("express");
 // const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const TelegramBot = require("node-telegram-bot-api");
+var cors = require("cors");
 require("dotenv").config();
 
 if (!process.env.BOT_TOKEN) throw new Error("Config bot api first");
@@ -17,6 +18,7 @@ const app = express();
 // app.set("views", path.join(__dirname, "views"));
 // app.set("view engine", "jade");
 
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

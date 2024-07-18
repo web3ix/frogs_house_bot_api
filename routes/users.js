@@ -142,7 +142,7 @@ router.post("/", async function (req, res, next) {
 		user = await prisma.user.upsert({
 			create: {
 				userId: initUser.id.toString(),
-				username: initUser.username,
+				username: initUser?.username ?? "",
 				point: point + (initUser.is_premium ? 300 : 0),
 				age: age,
 				isPremium: initUser.is_premium ?? false,

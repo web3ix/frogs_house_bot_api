@@ -49,7 +49,28 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 // Listen for any kind of message. There are different kinds of messages.
 bot.on("message", (msg) => {
-	bot.sendPhoto(msg.chat.id, "https://imgur.com/xB8KDfA", {
+	const results = [
+		{
+			type: "article",
+			id: "1",
+			title: "Open Web App",
+			input_message_content: {
+				message_text: "Click the button below to open the web app:",
+			},
+			reply_markup: {
+				inline_keyboard: [
+					[
+						{
+							text: "Open Web App",
+							web_app: { url: "https://t.me/frogs_house_bot/join" },
+						},
+					],
+				],
+			},
+		},
+	];
+
+	bot.sendMessage(msg.chat.id, "https://imgur.com/xB8KDfA", {
 		caption:
 			"How cool is your Telegram profile? Check your rating and receive rewards 🐸",
 		reply_markup: {
@@ -57,7 +78,9 @@ bot.on("message", (msg) => {
 				[
 					{
 						text: "Let's go",
-						url: "https://t.me/frogs_house_bot/join",
+						web_app: {
+							url: "https://t.me/frogs_house_bot/join",
+						},
 					},
 					{
 						text: "Join Frogs community",
@@ -65,8 +88,12 @@ bot.on("message", (msg) => {
 					},
 				],
 			],
+			// resize_keyboard: true,
+			// one_time_keyboard: true,
 		},
 	});
+
+	// bot.answerInlineQuery(results);
 
 	// send a message to the chat acknowledging receipt of their message
 	// bot.sendMessage(chatId, "Received your message");

@@ -9,14 +9,6 @@ const prisma = new PrismaClient();
 
 /* GET users listing. */
 router.get("/", async function (req, res, next) {
-	if (
-		!req.query.query_id ||
-		!req.query.user ||
-		!req.query.auth_date ||
-		!req.query.hash
-	)
-		return res.status(400).send("Missing required query fields");
-
 	const initData = new URLSearchParams({
 		query_id: req.query.query_id,
 		user: req.query.user,
@@ -24,10 +16,15 @@ router.get("/", async function (req, res, next) {
 		hash: req.query.hash,
 	});
 
-	try {
-		validate(initData, process.env.BOT_TOKEN);
-	} catch (error) {
-		return res.status(401).send("Unauthorized");
+	if (req.query.query_id) {
+		if (!req.query.user || !req.query.auth_date || !req.query.hash)
+			return res.status(400).send("Missing required query fields");
+
+		try {
+			validate(initData, process.env.BOT_TOKEN);
+		} catch (error) {
+			return res.status(401).send("Unauthorized");
+		}
 	}
 
 	const initUser = JSON.parse(initData.get("user"));
@@ -51,14 +48,6 @@ router.get("/", async function (req, res, next) {
 });
 
 router.post("/", async function (req, res, next) {
-	if (
-		!req.body.query_id ||
-		!req.body.user ||
-		!req.body.auth_date ||
-		!req.body.hash
-	)
-		return res.status(400).send("Missing required query fields");
-
 	const initData = new URLSearchParams({
 		query_id: req.body.query_id,
 		user: JSON.stringify(req.body.user),
@@ -66,10 +55,15 @@ router.post("/", async function (req, res, next) {
 		hash: req.body.hash,
 	});
 
-	try {
-		validate(initData, process.env.BOT_TOKEN);
-	} catch (error) {
-		return res.status(401).send("Unauthorized");
+	if (req.body.query_id) {
+		if (!req.body.user || !req.body.auth_date || !req.body.hash)
+			return res.status(400).send("Missing required query fields");
+
+		try {
+			validate(initData, process.env.BOT_TOKEN);
+		} catch (error) {
+			return res.status(401).send("Unauthorized");
+		}
 	}
 
 	const initUser = JSON.parse(initData.get("user"));

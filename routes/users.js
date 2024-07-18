@@ -49,7 +49,7 @@ const getAccountAgeAndPoint = (id) => {
 		point = 1500;
 	} else if (age >= 5 && age < 10) {
 		point = 2500;
-	} else {
+	} else if (age >= 10) {
 		point = 3100;
 	}
 

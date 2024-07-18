@@ -93,7 +93,7 @@ router.get("/", async function (req, res, next) {
 
 	const user = await prisma.user.findFirst({
 		where: {
-			userId: initUser.id,
+			userId: initUser.id.toString(),
 		},
 		select: {
 			id: true,
@@ -133,7 +133,7 @@ router.post("/", async function (req, res, next) {
 
 	let user = await prisma.user.findUnique({
 		where: {
-			userId: initUser.id,
+			userId: initUser.id.toString(),
 		},
 	});
 
@@ -151,7 +151,7 @@ router.post("/", async function (req, res, next) {
 
 		user = await prisma.user.upsert({
 			create: {
-				userId: initUser.id,
+				userId: initUser.id.toString(),
 				username: initUser.username,
 				point: point + (initUser.is_premium ? 300 : 0),
 				age: age,
@@ -160,7 +160,7 @@ router.post("/", async function (req, res, next) {
 			},
 			update: {},
 			where: {
-				userId: initUser.id,
+				userId: initUser.id.toString(),
 			},
 		});
 

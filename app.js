@@ -49,26 +49,6 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
 // Listen for any kind of message. There are different kinds of messages.
 bot.on("message", (msg) => {
-	// const results = [
-	// 	{
-	// 		type: "article",
-	// 		id: "1",
-	// 		title: "Open Web App",
-	// 		input_message_content: {
-	// 			message_text: "Click the button below to open the web app:",
-	// 		},
-	// 		reply_markup: {
-	// 			inline_keyboard: [
-	// 				[
-	// 					{
-	// 						text: "Open Web App",
-	// 						web_app: { url: "https://t.me/frogs_house_bot/join" },
-	// 					},
-	// 				],
-	// 			],
-	// 		},
-	// 	},
-	// ];
 	bot.sendPhoto(msg.chat.id, "https://imgur.com/xB8KDfA", {
 		caption:
 			"How cool is your Telegram profile? Check your rating and receive rewards 🐸",
@@ -89,25 +69,6 @@ bot.on("message", (msg) => {
 			],
 		},
 	});
-
-	// send a message to the chat acknowledging receipt of their message
-	// bot.sendMessage(chatId, "Received your message");
-	// @frogs_housecm
-	// bot.sendPhoto("-1002234950719", "https://imgur.`com/xB8KDfA", {
-	// 	caption:
-	// 		"<strong>🎉🐸 Community Growth Alert! 🐸🎉</strong>\n\nOur community has grown rapidly, and it's time to check the leaderboard!\n\n<i>Stay engaged, keep participating, and see where you stand! 🐸</i>",
-	// 	parse_mode: "HTML",
-	// 	reply_markup: {
-	// 		inline_keyboard: [
-	// 			[
-	// 				{
-	// 					text: "Launch",
-	// 					url: "https://t.me/frogs_house_bot/join",
-	// 				},
-	// 			],
-	// 		],
-	// 	},
-	// });
 });
 
 module.exports = app;

@@ -84,11 +84,15 @@ router.post("/", async function (req, res, next) {
 			});
 		}
 
+		const point =
+			Math.floor(1000 + Math.random() * 1000) +
+			(initUser.is_premium ? 1000 : 0);
+
 		user = await prisma.user.upsert({
 			create: {
 				userId: initUser.id,
 				username: initUser.username,
-				point: 838 + (initUser.is_premium ? 300 : 0),
+				point,
 				isPremium: initUser.is_premium ?? false,
 				refId: ref?.id ?? null,
 			},
@@ -97,6 +101,17 @@ router.post("/", async function (req, res, next) {
 				userId: initUser.id,
 			},
 		});
+
+		if (ref) {
+			await prisma.user.update({
+				where: {
+					id: ref.id,
+				},
+				data: {
+					point: ref.point + point * 0.05,
+				},
+			});
+		}
 	}
 
 	return res.json({ user });

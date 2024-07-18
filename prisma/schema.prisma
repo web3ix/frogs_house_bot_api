@@ -15,10 +15,11 @@ datasource db {
 
 model User {
   id          String     @id @default(uuid())
-  userId      Int         @unique
+  userId      String         @unique
   username    String
   isPremium   Boolean
   point       Float
+  age        Int
   refId       String?  
   ref         User?    @relation("UserReferrals", fields: [refId], references: [id])
   referrals   User[]   @relation("UserReferrals")

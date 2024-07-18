@@ -1,8 +1,9 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "userId" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
     "username" TEXT NOT NULL,
+    "isPremium" BOOLEAN NOT NULL,
     "point" DOUBLE PRECISION NOT NULL,
     "refId" TEXT,
 

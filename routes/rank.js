@@ -25,6 +25,7 @@ router.get("/", async function (req, res, next) {
         SELECT *, (point + "refPoint" + "commPoint") AS totalPoints
         FROM "User"
         ORDER BY totalPoints DESC
+        LIMIT 500
     `;
 
 	return res.json({

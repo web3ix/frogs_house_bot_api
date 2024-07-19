@@ -24,8 +24,8 @@ const app = express();
 
 app.use(
 	cors({
-		origin: "https://frog-house-mini-app.vercel.app/",
-		optionsSuccessStatus: 200,
+		// origin: "https://frog-house-mini-app.vercel.app/",
+		// optionsSuccessStatus: 200,
 	})
 );
 app.use(logger("dev"));

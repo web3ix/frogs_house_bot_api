@@ -53,8 +53,11 @@ if (process.env.IS_BOT == 1) {
 
 	// Listen for any kind of message. There are different kinds of messages.
 	bot.on("message", (msg) => {
-		bot.sendPhoto(msg.chat.id, "https://imgur.com/xB8KDfA", {
-			caption: `🐸 Community Growth Announcement! 🐸
+		bot.sendPhoto(
+			msg.chat.id,
+			"https://res.cloudinary.com/munumber2/image/upload/f_auto,q_auto/ee5wxbmkr5hqqev5vry6",
+			{
+				caption: `🐸 Community Growth Announcement! 🐸
 
 Dogs, cats, and what's next generation ??? 🐾 🐸
 
@@ -63,23 +66,24 @@ Get started today 🔥
 Our community is expanding rapidly, and it's time to check out the leaderboard! This growth reflects the enthusiasm and dedication of all our members. We’re excited to welcome new faces and appreciate the contributions from members.
 
 Let’s keep the momentum going and make our community even stronger`,
-			reply_markup: {
-				inline_keyboard: [
-					[
-						{
-							text: "Let's go",
-							web_app: {
-								url: "https://t.me/frogs_house_bot/join",
+				reply_markup: {
+					inline_keyboard: [
+						[
+							{
+								text: "Let's go",
+								web_app: {
+									url: "https://t.me/frogs_house_bot/join",
+								},
 							},
-						},
-						{
-							text: "Join Frogs community",
-							url: "https://t.me/frogs_housecm",
-						},
+							{
+								text: "Join Frogs community",
+								url: "https://t.me/frogs_housecm",
+							},
+						],
 					],
-				],
-			},
-		});
+				},
+			}
+		);
 	});
 }
 

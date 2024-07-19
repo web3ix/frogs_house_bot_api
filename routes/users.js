@@ -100,19 +100,9 @@ router.get("/", async function (req, res, next) {
 			ref: {
 				select: {
 					id: true,
+					point: true,
 					refPoint: true,
-					ref: {
-						select: {
-							id: true,
-							refPoint: true,
-							ref: {
-								select: {
-									id: true,
-									refPoint: true,
-								},
-							},
-						},
-					},
+					commPoint: true,
 				},
 			},
 			referrals: true,
@@ -169,62 +159,63 @@ router.post("/", async function (req, res, next) {
 		},
 	});
 
-	if (!user) {
-		let ref;
-		if (req.body.ref && req.body.ref !== initUser.id.toString()) {
-			// ref level 1
-			ref = await prisma.user.findUnique({
-				where: {
-					id: req.body.ref,
-				},
-				select: {
-					id: true,
-					refPoint: true,
-					ref: {
-						select: {
-							id: true,
-							refPoint: true,
-							ref: {
-								select: {
-									id: true,
-									refPoint: true,
-								},
+	if (user) return res.json({ user });
+
+	let ref;
+	if (req.body.ref && req.body.ref !== initUser.id.toString()) {
+		// ref level 1
+		ref = await prisma.user.findUnique({
+			where: {
+				id: req.body.ref,
+			},
+			select: {
+				id: true,
+				refPoint: true,
+				ref: {
+					select: {
+						id: true,
+						refPoint: true,
+						ref: {
+							select: {
+								id: true,
+								refPoint: true,
 							},
 						},
 					},
 				},
-			});
-		}
-
-		const { age, point } = getAccountAgeAndPoint(initUser.id);
-
-		user = await prisma.user.upsert({
-			create: {
-				userId: initUser.id.toString(),
-				username: initUser?.username ?? "",
-				point: point + (initUser.is_premium ? 300 : 0),
-				age: age,
-				isPremium: initUser.is_premium ?? false,
-				refId: ref?.id ?? null,
 			},
-			update: {},
+		});
+	}
+
+	const { age, point } = getAccountAgeAndPoint(initUser.id);
+
+	user = await prisma.user.upsert({
+		create: {
+			userId: initUser.id.toString(),
+			username: initUser?.username ?? "",
+			point: point + (initUser.is_premium ? 300 : 0),
+			age: age,
+			isPremium: initUser.is_premium ?? false,
+			refId: ref?.id ?? null,
+		},
+		update: {},
+		where: {
+			userId: initUser.id.toString(),
+		},
+	});
+
+	// tier 1 => 10%, tier 2 & 3 => 5%
+	if (ref) {
+		await prisma.user.update({
 			where: {
-				userId: initUser.id.toString(),
+				id: ref.id,
+			},
+			data: {
+				refPoint: ref.refPoint + point * 0.1,
 			},
 		});
 
-		// tier 1 => 10%, tier 2 & 3 => 5%
-		if (ref) {
-			await prisma.user.update({
-				where: {
-					id: ref.id,
-				},
-				data: {
-					refPoint: ref.refPoint + point * 0.1,
-				},
-			});
-		}
-		if (ref.ref) {
+		if (ref?.ref) {
 			await prisma.user.update({
 				where: {
 					id: ref.ref.id,
@@ -233,16 +224,17 @@ router.post("/", async function (req, res, next) {
 					refPoint: ref.ref.refPoint + point * 0.05,
 				},
 			});
-		}
-		if (ref.ref.ref) {
-			await prisma.user.update({
-				where: {
-					id: ref.ref.ref.id,
-				},
-				data: {
-					refPoint: ref.ref.ref.refPoint + point * 0.05,
-				},
-			});
+
+			if (ref?.ref?.ref) {
+				await prisma.user.update({
+					where: {
+						id: ref.ref.ref.id,
+					},
+					data: {
+						refPoint: ref.ref.ref.refPoint + point * 0.05,
+					},
+				});
+			}
 		}
 	}
 

@@ -3,8 +3,13 @@
 	"version": "0.0.0",
 	"private": true,
 	"scripts": {
-		"dev": "nodemon ./bin/www",
-		"start": "node ./bin/www"
+		"generate": "npx prisma generate",
+		"build": "npm run generate",
+		"dev": "npm run generate && nodemon ./bin/www",
+		"start": "npm run build && node ./bin/www"
+	},
+	"prisma": {
+		"schema": "prisma/schema.prisma"
 	},
 	"dependencies": {
 		"@prisma/client": "^5.17.0",

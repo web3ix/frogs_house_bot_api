@@ -2,10 +2,13 @@ const express = require("express");
 const { parseInitData } = require("@telegram-apps/sdk");
 const { validate } = require("@telegram-apps/init-data-node");
 const { PrismaClient } = require("@prisma/client");
+const TelegramBot = require("node-telegram-bot-api");
 
 const router = express.Router();
 
 const prisma = new PrismaClient();
+
+const bot = new TelegramBot(process.env.BOT_TOKEN_COMM, { polling: true });
 
 const getAccountAgeAndPoint = (id) => {
 	const _id = +id;
@@ -90,12 +93,51 @@ router.get("/", async function (req, res, next) {
 			userId: true,
 			username: true,
 			point: true,
+			refPoint: true,
+			commPoint: true,
 			age: true,
 			isPremium: true,
-			ref: true,
+			ref: {
+				select: {
+					id: true,
+					refPoint: true,
+					ref: {
+						select: {
+							id: true,
+							refPoint: true,
+							ref: {
+								select: {
+									id: true,
+									refPoint: true,
+								},
+							},
+						},
+					},
+				},
+			},
 			referrals: true,
 		},
 	});
+
+	if (!user) return res.json({ user: null });
+
+	if (user.commPoint === 0) {
+		let joinedComm = false;
+		try {
+			await bot.getChatMember(process.env.COMM_USERNAME, user.userId);
+			joinedComm = true;
+		} catch (error) {}
+		if (joinedComm) {
+			await prisma.user.update({
+				where: {
+					id: user.id,
+				},
+				data: {
+					commPoint: 1000, // fixed point when joined community
+				},
+			});
+		}
+	}
 
 	return res.json({ user });
 });
@@ -129,10 +171,27 @@ router.post("/", async function (req, res, next) {
 
 	if (!user) {
 		let ref;
-		if (req.body.ref) {
+		if (req.body.ref && req.body.ref !== initUser.id.toString()) {
+			// ref level 1
 			ref = await prisma.user.findUnique({
 				where: {
 					id: req.body.ref,
+				},
+				select: {
+					id: true,
+					refPoint: true,
+					ref: {
+						select: {
+							id: true,
+							refPoint: true,
+							ref: {
+								select: {
+									id: true,
+									refPoint: true,
+								},
+							},
+						},
+					},
 				},
 			});
 		}
@@ -154,13 +213,34 @@ router.post("/", async function (req, res, next) {
 			},
 		});
 
+		// tier 1 => 10%, tier 2 & 3 => 5%
 		if (ref) {
 			await prisma.user.update({
 				where: {
 					id: ref.id,
 				},
 				data: {
-					point: ref.point + point * 0.05,
+					refPoint: ref.refPoint + point * 0.1,
+				},
+			});
+		}
+		if (ref.ref) {
+			await prisma.user.update({
+				where: {
+					id: ref.ref.id,
+				},
+				data: {
+					refPoint: ref.ref.refPoint + point * 0.05,
+				},
+			});
+		}
+		if (ref.ref.ref) {
+			await prisma.user.update({
+				where: {
+					id: ref.ref.ref.id,
+				},
+				data: {
+					refPoint: ref.ref.ref.refPoint + point * 0.05,
 				},
 			});
 		}

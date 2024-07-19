@@ -8,6 +8,9 @@ var cors = require("cors");
 require("dotenv").config();
 
 if (!process.env.BOT_TOKEN) throw new Error("Config bot api first");
+if (!process.env.BOT_TOKEN_COMM) throw new Error("Config bot api first");
+if (!process.env.COMM_USERNAME)
+	throw new Error("Config community username first");
 
 // const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
@@ -44,31 +47,40 @@ app.use(function (err, req, res, next) {
 	// res.render("error");
 });
 
-// setup telegram bot
-const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+if (process.env.IS_BOT == 1) {
+	// setup telegram bot
+	const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
 
-// Listen for any kind of message. There are different kinds of messages.
-bot.on("message", (msg) => {
-	bot.sendPhoto(msg.chat.id, "https://imgur.com/xB8KDfA", {
-		caption:
-			"How cool is your Telegram profile? Check your rating and receive rewards 🐸",
-		reply_markup: {
-			inline_keyboard: [
-				[
-					{
-						text: "Let's go",
-						web_app: {
-							url: "https://t.me/frogs_house_bot/join",
+	// Listen for any kind of message. There are different kinds of messages.
+	bot.on("message", (msg) => {
+		bot.sendPhoto(msg.chat.id, "https://imgur.com/xB8KDfA", {
+			caption: `🐸 Community Growth Announcement! 🐸
+
+Dogs, cats, and what's next generation ??? 🐾 🐸
+
+Get started today 🔥
+
+Our community is expanding rapidly, and it's time to check out the leaderboard! This growth reflects the enthusiasm and dedication of all our members. We’re excited to welcome new faces and appreciate the contributions from members.
+
+Let’s keep the momentum going and make our community even stronger`,
+			reply_markup: {
+				inline_keyboard: [
+					[
+						{
+							text: "Let's go",
+							web_app: {
+								url: "https://t.me/frogs_house_bot/join",
+							},
 						},
-					},
-					{
-						text: "Join Frogs community",
-						url: "https://t.me/frogs_housecm",
-					},
+						{
+							text: "Join Frogs community",
+							url: "https://t.me/frogs_housecm",
+						},
+					],
 				],
-			],
-		},
+			},
+		});
 	});
-});
+}
 
 module.exports = app;

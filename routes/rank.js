@@ -14,19 +14,18 @@ router.get("/", async function (req, res, next) {
 
 	const result = await prisma.$queryRaw`
              SELECT rank FROM (
-                SELECT "userId", ROW_NUMBER() OVER (ORDER BY "point" DESC) as rank FROM "User"
+                SELECT "userId", ROW_NUMBER() OVER (ORDER BY (point + "refPoint" + "commPoint") DESC) as rank FROM "User"
             ) ranked_users
             WHERE "userId" = ${req.query.user_id}
         `;
 
 	const total = await prisma.user.count();
 
-	const top500 = await prisma.user.findMany({
-		orderBy: {
-			point: "desc",
-		},
-		take: 500,
-	});
+	const top500 = await prisma.$queryRaw`
+        SELECT *, (point + "refPoint" + "commPoint") AS totalPoints
+        FROM "User"
+        ORDER BY totalPoints DESC
+    `;
 
 	return res.json({
 		total,

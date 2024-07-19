@@ -53,7 +53,7 @@ if (process.env.IS_BOT == 1) {
 
 	// Listen for any kind of message. There are different kinds of messages.
 	bot.on("message", (msg) => {
-		bot.sendPhoto(msg.chat.id, "https://imgur.com/xB8KDfA", {
+		bot.sendPhoto(msg.chat.id, "https://imgur.com/a/ZdytAmy", {
 			caption: `🐸 Community Growth Announcement! 🐸
 
 Dogs, cats, and what's next generation ??? 🐾 🐸
